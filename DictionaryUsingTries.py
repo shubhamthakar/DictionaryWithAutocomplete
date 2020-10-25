@@ -1,3 +1,38 @@
+import pandas as pd
+from tkinter import *
+from tkinter import messagebox
+
+root = Tk()
+root.geometry("250x100")
+root.title("Dictionary")
+frame = LabelFrame(root,text="", padx=5, pady=5, bg="light blue", bd=5)
+frame.grid(row=0, column=0, padx=10, pady=10)
+lab1 = Label(frame, text="Word", bg="light blue")
+lab1.grid(row=0, column=0, padx = 5)
+e = Entry(frame, bg="pink")
+e.grid(row=0, column=1, padx=10, pady=10, columnspan=4)
+
+def button_click():
+    wrd = e.get()
+    e.delete(0,END)
+    meaning = t.search(wrd)
+    if(meaning==-1):
+        suggested = t.autocomplete(wrd)
+        if suggested:
+            msg = "Word not found.\nDid you mean: "
+            for i in suggested:
+                msg=msg+i+" "
+            messagebox.showinfo("Not Found",msg)
+        else:
+            messagebox.showinfo("Not Found","Word not found.")
+    else:
+        messagebox.showinfo("Meaning",meaning)
+
+button1 = Button(frame, text="Search", command=button_click, bg="dark blue", fg="white")
+button1.grid(row=1, column=1,ipadx=10, padx=5)
+button_quit = Button(frame,text="Exit", command=root.quit, bg="dark blue", fg="white")
+button_quit.grid(row=1, column=2, ipadx = 10, padx=5)
+
 class Node():
     def __init__(self):
         self.isEndofWord = False
@@ -29,6 +64,7 @@ class Tries():
         root = self.root
         len1 = len(word)
         st =""
+        li=[]
         for i in range (0,len1):
             key = self.getIndex(word[i])
             if key not in root.dict:
@@ -37,15 +73,18 @@ class Tries():
             root = root.dict.get(key)
         for keyi, valuei in root.dict.items():
             if valuei.isEndofWord :
-                print(st,end="")
+                #print(st,end="")
                 suffix = chr(keyi+97)
-                print(suffix)
+                li.append(st+suffix)
+                #print(suffix)
         for keyi, valuei in root.dict.items():
             for keyj, valuej in valuei.dict.items():
                 if valuej.isEndofWord:
-                    print(st,end="")
+                    #print(st,end="")
                     suffix = chr(97+keyi)+chr(97+keyj)
-                    print(suffix)
+                    #print(suffix)
+                    li.append(st+suffix)
+        return li
 
     def search(self, word):
         root = self.root
@@ -53,19 +92,14 @@ class Tries():
         for i in range (0,len1):
             key = self.getIndex(word[i])
             if key not in root.dict:
-                print("The word you entered does not exist")
-                print("Did you mean :")
-                self.autocomplete(word)
                 return -1
+                #print("Did you mean :")
+                #self.autocomplete(word)
             root = root.dict.get(key)
         if root.isEndofWord == False:
-            print("The word you entered does not exist")
-            print("Did you mean :")
-            self.autocomplete(word)
             return -1
         else:
-            print(root.meaning)
-            return 1
+            return root.meaning.strip()
 
     def delete(self, word):
         root = self.root
@@ -80,14 +114,8 @@ class Tries():
         root.meaning = ""
 
 t = Tries()
-words = ["language", "computer", "map"]
-meanings = ["the method of human communication", 
-"A computer is a machine that can be instructed to carry out sequences of arithmetic logical operations automatically via computer programming",
-"a diagrammatic representation of an area", ]
-for i in range (0,len(words)):
-    t.insert(words[i], meanings[i])
-
-t.search("langua")
-t.search("languaf")
-t.search("computers")
-t.search("m")
+df = pd.read_csv('Word_List.csv')
+df1 = df.to_numpy()
+for i in df1:
+    t.insert(i[0],i[1])
+root.mainloop()
