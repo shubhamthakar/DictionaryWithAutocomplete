@@ -60,7 +60,7 @@ class Tries():
         root.isEndofWord = True
         root.meaning = meaning
 
-    def autocomplete(self, word):
+    def autocomplete1(self, word):
         root = self.root
         len1 = len(word)
         st =""
@@ -85,6 +85,45 @@ class Tries():
                     #print(suffix)
                     li.append(st+suffix)
         return li
+
+    def autocomplete(self, word):
+        root = self.root
+        len1 = len(word)
+        prefix =""
+        for i in range (0,len1):
+            key = self.getIndex(word[i])
+            if key not in root.dict:
+                break
+            prefix = prefix + word[i]
+            root = root.dict.get(key)
+        queue = []
+        arr = []
+        queue.append(root)
+        suffixarr = []
+        suffixele = None
+        while(1):
+            if (len(queue)==0):
+                return(arr)
+            for i in range(0,len(queue)):
+                for keyi, valuei in queue[i].dict.items():
+                    if valuei.isEndofWord:
+                        if len(suffixarr) >0:
+                            suffix = suffixarr[i]+chr(97+keyi)
+                        else:
+                            suffix = chr(keyi +97)
+                        arr.append((prefix+suffix))
+                        if (len(arr)==4):
+                            return(arr)
+            for i in range (0,len(queue)):
+                rootele = queue.pop(0)
+                if len(suffixarr) > 0:
+                    suffixele = suffixarr.pop(0)
+                for keyi,valuei in rootele.dict.items():
+                    queue.append(valuei)
+                    if suffixele == None:
+                        suffixarr.append(chr(keyi+97))
+                    else:
+                        suffixarr.append((suffixele + chr(keyi+97)))
 
     def search(self, word):
         root = self.root
@@ -114,7 +153,7 @@ class Tries():
         root.meaning = ""
 
 t = Tries()
-df = pd.read_csv('Word_List.csv')
+df = pd.read_csv('word_list.csv')
 df1 = df.to_numpy()
 for i in df1:
     t.insert(i[0],i[1])
