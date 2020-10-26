@@ -3,13 +3,13 @@ from tkinter import *
 from tkinter import messagebox
 
 root = Tk()
-root.geometry("250x100")
+root.geometry("400x130")
 root.title("Dictionary")
 frame = LabelFrame(root,text="", padx=5, pady=5, bg="light blue", bd=5)
 frame.grid(row=0, column=0, padx=10, pady=10)
-lab1 = Label(frame, text="Word", bg="light blue")
-lab1.grid(row=0, column=0, padx = 5)
-e = Entry(frame, bg="pink")
+lab1 = Label(frame, text="Word", bg="light blue", font =80)
+lab1.grid(row=0, column=0, padx = 25)
+e = Entry(frame, bg="pink", font=80)
 e.grid(row=0, column=1, padx=10, pady=10, columnspan=4)
 
 def button_click():
@@ -21,17 +21,17 @@ def button_click():
         if suggested:
             msg = "Word not found.\nDid you mean: "
             for i in suggested:
-                msg=msg+i+" "
+                msg=msg+i+", "
             messagebox.showinfo("Not Found",msg)
         else:
             messagebox.showinfo("Not Found","Word not found.")
     else:
         messagebox.showinfo("Meaning",meaning)
 
-button1 = Button(frame, text="Search", command=button_click, bg="dark blue", fg="white")
+button1 = Button(frame, text="Search", command=button_click, bg="dark blue", fg="white", font=80)
 button1.grid(row=1, column=1,ipadx=10, padx=5)
-button_quit = Button(frame,text="Exit", command=root.quit, bg="dark blue", fg="white")
-button_quit.grid(row=1, column=2, ipadx = 10, padx=5)
+button_quit = Button(frame,text="Exit", command=root.quit, bg="dark blue", fg="white", font=80)
+button_quit.grid(row=1, column=2, ipadx = 10, padx=8)
 
 class Node():
     def __init__(self):
@@ -60,31 +60,6 @@ class Tries():
         root.isEndofWord = True
         root.meaning = meaning
 
-    def autocomplete1(self, word):
-        root = self.root
-        len1 = len(word)
-        st =""
-        li=[]
-        for i in range (0,len1):
-            key = self.getIndex(word[i])
-            if key not in root.dict:
-                break
-            st = st + word[i]
-            root = root.dict.get(key)
-        for keyi, valuei in root.dict.items():
-            if valuei.isEndofWord :
-                #print(st,end="")
-                suffix = chr(keyi+97)
-                li.append(st+suffix)
-                #print(suffix)
-        for keyi, valuei in root.dict.items():
-            for keyj, valuej in valuei.dict.items():
-                if valuej.isEndofWord:
-                    #print(st,end="")
-                    suffix = chr(97+keyi)+chr(97+keyj)
-                    #print(suffix)
-                    li.append(st+suffix)
-        return li
 
     def autocomplete(self, word):
         root = self.root
