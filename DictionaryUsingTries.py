@@ -60,44 +60,20 @@ class Tries():
         root.isEndofWord = True
         root.meaning = meaning
 
-    def autocomplete1(self, word):
-        root = self.root
-        len1 = len(word)
-        st =""
-        li=[]
-        for i in range (0,len1):
-            key = self.getIndex(word[i])
-            if key not in root.dict:
-                break
-            st = st + word[i]
-            root = root.dict.get(key)
-        for keyi, valuei in root.dict.items():
-            if valuei.isEndofWord :
-                #print(st,end="")
-                suffix = chr(keyi+97)
-                li.append(st+suffix)
-                #print(suffix)
-        for keyi, valuei in root.dict.items():
-            for keyj, valuej in valuei.dict.items():
-                if valuej.isEndofWord:
-                    #print(st,end="")
-                    suffix = chr(97+keyi)+chr(97+keyj)
-                    #print(suffix)
-                    li.append(st+suffix)
-        return li
-
     def autocomplete(self, word):
         root = self.root
         len1 = len(word)
+        arr = []
         prefix =""
         for i in range (0,len1):
             key = self.getIndex(word[i])
             if key not in root.dict:
                 break
+            if root.dict[key].isEndofWord:
+                arr.append(word[:(i+1)])
             prefix = prefix + word[i]
             root = root.dict.get(key)
         queue = []
-        arr = []
         queue.append(root)
         suffixarr = []
         suffixele = None
