@@ -2,10 +2,10 @@ import pandas as pd
 from tkinter import *
 from tkinter import messagebox
 
-root = Tk()
-root.geometry("400x130")
-root.title("Dictionary")
-frame = LabelFrame(root,text="", padx=5, pady=5, bg="light blue", bd=5)
+win = Tk()
+win.geometry("400x130")
+win.title("Dictionary")
+frame = LabelFrame(win,text="", padx=5, pady=5, bg="light blue", bd=5)
 frame.grid(row=0, column=0, padx=10, pady=10)
 lab1 = Label(frame, text="Word", bg="light blue", font =25)
 lab1.grid(row=0, column=0, padx = 25)
@@ -30,7 +30,7 @@ def button_click():
 
 button1 = Button(frame, text="Search", command=button_click, bg="dark blue", fg="white", font=25)
 button1.grid(row=1, column=1,ipadx=10, padx=5)
-button_quit = Button(frame,text="Exit", command=root.quit, bg="dark blue", fg="white", font=25)
+button_quit = Button(frame,text="Exit", command=win.quit, bg="dark blue", fg="white", font=25)
 button_quit.grid(row=1, column=2, ipadx = 10, padx=8)
 
 class Node():
@@ -108,8 +108,6 @@ class Tries():
             key = self.getIndex(word[i])
             if key not in root.dict:
                 return -1
-                #print("Did you mean :")
-                #self.autocomplete(word)
             root = root.dict.get(key)
         if root.isEndofWord == False:
             return -1
@@ -121,4 +119,4 @@ df = pd.read_csv('word_list.csv')
 df1 = df.to_numpy()
 for i in df1:
     t.insert(i[0],i[1])
-root.mainloop()
+win.mainloop()
