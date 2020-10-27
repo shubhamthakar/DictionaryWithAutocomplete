@@ -116,18 +116,6 @@ class Tries():
         else:
             return root.meaning.strip()
 
-    def delete(self, word):
-        root = self.root
-        len1 = len(word)
-        for i in range (0,len1):
-            key = self.getIndex(word[i])
-            if key not in root.dict:
-                print("Word is not present")
-                return -1
-            root = root.dict.get(key)
-        root.isEndofWord = False
-        root.meaning = ""
-
 t = Tries()
 df = pd.read_csv('word_list.csv')
 df1 = df.to_numpy()
